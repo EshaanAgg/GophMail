@@ -10,6 +10,7 @@ func main() {
 
 	flag.StringVar(&flags.SenderEmail, "e", "", "The email address to send the mails from")
 	flag.StringVar(&flags.Password, "p", "", "The password of the sender email account")
+	flag.StringVar(&flags.Status, "s", "", "The status of the mail to be sent")
 	flag.StringVar(&flags.Template, "t", "./template.html", "Relative path to the template file to generate your mail body")
 	flag.StringVar(&flags.DataFile, "d", "./data.csv", "Relative path to the data file containing data about the receipients")
 	flag.BoolVar(&flags.Help, "help", false, "Help about the default arguments of the CLI")

@@ -13,10 +13,13 @@ The CLI needs two external files to generate and send the emails:
 
 While using the CLI, you can use the following flags:
 
-- `-e`: Specify the sender's email address
-- `-p`: Specify the password for the sender's email address
-- `-t`: Specify the path to the template file
-- `-d`: Specify the path to the data containing
+| Flag | Description                             | Default Value   | Required |
+| ---- | --------------------------------------- | --------------- | -------- |
+| `-e` | Sender's email address                  | NA              | Y        |
+| `-p` | Password for the sender's email service | NA              | Y        |
+| `-s` | Status of the mails to be sent          | ""              | N        |
+| `-t` | Path to the template file               | `template.html` | N        |
+| `-d` | Path to the data file                   | `data.csv`      | N        |
 
 You can use the `-h` to see the help about the various flags you can pass.
 
@@ -26,3 +29,9 @@ You can use the `-h` to see the help about the various flags you can pass.
 - The delimeter must be `,` and the new line delimeter must be `\n`.
 - The file must have headers.
 - It must contain atleast one header called `Recipients` which contains the email address of the recipients.
+
+#### Constraints on the Template File
+
+#### Note
+
+You can checkout a sample [template file](./template.html) and [data file](./data.csv) here, or can edit them as the need arises.
