@@ -1,12 +1,20 @@
 package cli
 
+import "fmt"
+
 type InputFlags struct {
 	SenderEmail string
+	Subject     string
 	Password    string
-	Template    string
-	DataFile    string
-	Status      string
-	Help        bool
+
+	Template string
+	DataFile string
+
+	AppPassword string
+	SMTPSever   string
+	SMTPPort    int
+
+	Help bool
 }
 
 func (flags *InputFlags) Send() {
@@ -25,6 +33,12 @@ func (flags *InputFlags) validate() {
 
 	data := flags.parseData()
 	mails := flags.generateMailContent(data)
+
+	if !flags.confirmMail(mails[0], data[0]["Recipient"]) {
+		sendError("Operation cancelled.")
+	}
+
+	fmt.Print("Sending mails...\n\n")
 
 	for i, mail := range mails {
 		flags.sendMail(mail, data[i]["Recipient"])
