@@ -1,9 +1,5 @@
 package cli
 
-import (
-	"fmt"
-)
-
 type InputFlags struct {
 	SenderEmail string
 	Password    string
@@ -27,8 +23,10 @@ func (flags *InputFlags) validate() {
 		sendError("Password is a REQUIRED argument which can't be blank. Please specify the same using the '-p' flag.")
 	}
 
-	headers, records := flags.parseData()
-	flags.parseTemplate()
+	data := flags.parseData()
+	mails := flags.generateMailContent(data)
 
-	fmt.Println(headers, records)
+	for i, mail := range mails {
+		flags.sendMail(mail, data[i]["Recipient"])
+	}
 }

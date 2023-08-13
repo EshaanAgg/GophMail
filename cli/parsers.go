@@ -1,12 +1,14 @@
 package cli
 
 import (
+	"bytes"
 	"encoding/csv"
 	"fmt"
+	"html/template"
 	"os"
 )
 
-func (flags *InputFlags) parseData() (map[string]int, [][]string) {
+func (flags *InputFlags) parseData() []map[string]string {
 
 	f, err := os.Open(flags.DataFile)
 	if err != nil {
@@ -26,21 +28,47 @@ func (flags *InputFlags) parseData() (map[string]int, [][]string) {
 	}
 
 	headers := records[0]
-	headerIndex := make(map[string]int)
-	foundReceipients := false
+	data := []map[string]string{}
+	foundReceipient := false
 
-	for ind, header := range headers {
-		headerIndex[header] = ind
-		if header == "Recipients" {
-			foundReceipients = true
+	for _, header := range headers {
+		if header == "Recipient" {
+			foundReceipient = true
 		}
 	}
 
-	if !foundReceipients {
-		sendError("The data file has no header named 'Recipients'. Please make sure that the same is present.")
+	if !foundReceipient {
+		sendError("The data file has no header named 'Recipient'. Please make sure that the same is present.")
 	}
 
-	return headerIndex, records[1:]
+	for i := 1; i < len(records); i++ {
+		record := records[i]
+		dataEntry := map[string]string{}
+
+		for ind, header := range headers {
+			dataEntry[header] = record[ind]
+		}
+
+		data = append(data, dataEntry)
+	}
+
+	return data
 }
 
-func (flags *InputFlags) parseTemplate() {}
+func (flags *InputFlags) generateMailContent(data []map[string]string) []string {
+	t, err := template.ParseFiles(flags.Template)
+
+	if err != nil {
+		sendError("The given template file does not exist or is not of valid type. Please check the requirements.")
+	}
+
+	mails := []string{}
+
+	for _, d := range data {
+		var mail bytes.Buffer
+		t.Execute(&mail, d)
+		mails = append(mails, mail.String())
+	}
+
+	return mails
+}

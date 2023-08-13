@@ -1,6 +1,6 @@
 # GophMail
 
-This is a simple `CLI` built in `Go` that enables you to send mails to multiple users in multiple templates, without ever leaving your command line.
+This is a simple `cli` built in `Go` that enables you to send mails to multiple users in multiple templates, without ever leaving your command line.
 
 ## About the CLI
 
@@ -28,9 +28,13 @@ You can use the `-h` to see the help about the various flags you can pass.
 - It must be a `.csv` or `.tsv` file.
 - The delimeter must be `,` and the new line delimeter must be `\n`.
 - The file must have headers.
-- It must contain atleast one header called `Recipients` which contains the email address of the recipients.
+- All the headers which are are to be used in the template must be single words.
+- It must contain atleast one header called `Recipient` which contains the email address of the recipients.
 
 #### Constraints on the Template File
+
+- The template file would would need to specify the property `X` as `{{ .X }}` in the template to be populated.
+- All the names are case-sensitive.
 
 #### Note
 
