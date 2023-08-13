@@ -7,7 +7,11 @@ import (
 )
 
 func (flags *InputFlags) confirmMail(content string, recipient string) bool {
-	flags.sendMail(content, recipient, false)
+	sent := flags.sendMail(content, recipient, false)
+
+	if !sent {
+		sendError("The mail could not be sent due to TCP timeout. Please try again.")
+	}
 
 	fmt.Printf("A sample mail for %s was generated and mailed to the sender's email address (%s).\n", recipient, flags.SenderEmail)
 	fmt.Print("You can check the same for content formating.\nShould I send all the mails? (Y/N) ")
@@ -21,7 +25,7 @@ func (flags *InputFlags) confirmMail(content string, recipient string) bool {
 	return response == "Y"
 }
 
-func (flags *InputFlags) sendMail(content string, recipient string, displayMessage bool) {
+func (flags *InputFlags) sendMail(content string, recipient string, displayMessage bool) bool {
 	m := gomail.NewMessage()
 
 	m.SetHeader("From", flags.SenderEmail)
@@ -36,7 +40,10 @@ func (flags *InputFlags) sendMail(content string, recipient string, displayMessa
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println("Mail to " + recipient + " failed.")
 		fmt.Println(err)
+		return false
 	} else if displayMessage {
 		fmt.Printf("Email to %s sent successfully.\n", recipient)
 	}
+
+	return true
 }
