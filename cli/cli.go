@@ -18,18 +18,8 @@ type InputFlags struct {
 }
 
 func (flags *InputFlags) Send() {
+	flags.parseEnv()
 	flags.validate()
-}
-
-func (flags *InputFlags) validate() {
-
-	if len(flags.SenderEmail) == 0 {
-		sendError("Sender email is a REQUIRED argument which can't be blank. Please specify the same using the '-e' flag.")
-	}
-
-	if len(flags.Password) == 0 {
-		sendError("Password is a REQUIRED argument which can't be blank. Please specify the same using the '-p' flag.")
-	}
 
 	data := flags.parseData()
 	mails := flags.generateMailContent(data)
@@ -41,6 +31,17 @@ func (flags *InputFlags) validate() {
 	fmt.Print("Sending mails...\n\n")
 
 	for i, mail := range mails {
-		flags.sendMail(mail, data[i]["Recipient"])
+		flags.sendMail(mail, data[i]["Recipient"], true)
+	}
+}
+
+func (flags *InputFlags) validate() {
+
+	if len(flags.SenderEmail) == 0 {
+		sendError("Sender email is a REQUIRED argument which can't be blank. Please specify the same using the '-e' flag.")
+	}
+
+	if len(flags.Password) == 0 {
+		sendError("Password is a REQUIRED argument which can't be blank. Please specify the same using the '-p' flag.")
 	}
 }

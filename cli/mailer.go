@@ -7,10 +7,10 @@ import (
 )
 
 func (flags *InputFlags) confirmMail(content string, recipient string) bool {
-	fmt.Print("Here is a sample mail that was generated:\n\n")
-	fmt.Printf("To: %s\n", recipient)
-	fmt.Printf("Mail Body:\n%s", content)
-	fmt.Print("\n\nShould I send the mails? (Y/N) ")
+	flags.sendMail(content, recipient, false)
+
+	fmt.Printf("A sample mail for %s was generated and mailed to the sender's email address (%s).\n", recipient, flags.SenderEmail)
+	fmt.Print("You can check the same for content formating.\nShould I send all the mails? (Y/N) ")
 
 	var response string
 	n, err := fmt.Scanln(&response)
@@ -21,7 +21,7 @@ func (flags *InputFlags) confirmMail(content string, recipient string) bool {
 	return response == "Y"
 }
 
-func (flags *InputFlags) sendMail(content string, recipient string) {
+func (flags *InputFlags) sendMail(content string, recipient string, displayMessage bool) {
 	m := gomail.NewMessage()
 
 	m.SetHeader("From", flags.SenderEmail)
@@ -34,9 +34,9 @@ func (flags *InputFlags) sendMail(content string, recipient string) {
 
 	// Send the email
 	if err := d.DialAndSend(m); err != nil {
+		fmt.Println("Mail to " + recipient + " failed.")
 		fmt.Println(err)
-		sendError("Mail to " + recipient + " failed.")
+	} else if displayMessage {
+		fmt.Printf("Email to %s sent successfully.\n", recipient)
 	}
-
-	fmt.Printf("Email to %s sent successfully.\n", recipient)
 }

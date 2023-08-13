@@ -28,6 +28,12 @@ You can use the `-h` to see the help about the various flags you can pass.
 
 Since the CLI uses a `SMTP` server to send the mails, you need to configure the same on your email provider to get the application password for remote login. The steps to obtain the same for `Google`/`Gmail` accounts [can be found here](https://mailmeteor.com/blog/gmail-smtp-settings#how-to-use-the-gmail-smtp-settings).
 
+## Environment Variables
+
+To set some of the commonly configurations, you can create a `.env` file (a copy of the [provided `.env.sample`](./env.sample)) and use them to provide the configurations.
+
+The parameters passed through the `.env` have the highest priority.
+
 #### Constraints on the Data File
 
 - It must be a `.csv` or `.tsv` file.
@@ -40,6 +46,9 @@ Since the CLI uses a `SMTP` server to send the mails, you need to configure the 
 
 - The template file would would need to specify the property `X` as `{{ .X }}` in the template to be populated.
 - All the names are case-sensitive.
+- You can always open your template file in a browser to see how the generated email would look before using the cli.
+
+Under the hood, we use Go's `text/template` package to parse the created template, and them use populate the variables by the CSV values to generate the mails. Thus leveraging the same syntax, you can use the additional capabilities of this templating package as well, without any addiontional configuration. You can [read more about the same here in this blog post](https://blog.logrocket.com/using-golang-templates/).
 
 #### Note
 

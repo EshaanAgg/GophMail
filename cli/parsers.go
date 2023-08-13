@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"html/template"
 	"os"
+	"strconv"
+
+	"github.com/joho/godotenv"
 )
 
 func (flags *InputFlags) parseData() []map[string]string {
@@ -71,4 +74,37 @@ func (flags *InputFlags) generateMailContent(data []map[string]string) []string 
 	}
 
 	return mails
+}
+
+func (flags *InputFlags) parseEnv() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		return
+	}
+
+	fmt.Println(".env file found. Populating variables from the same.")
+
+	if len(os.Getenv("MAIL_ID")) != 0 {
+		flags.SenderEmail = os.Getenv("MAIL_ID")
+	}
+
+	if len(os.Getenv("MAIL_PASSWORD")) != 0 {
+		flags.Password = os.Getenv("MAIL_PASSWORD")
+	}
+
+	if len(os.Getenv("SMTP_SERVER")) != 0 {
+		flags.SMTPSever = os.Getenv("SMTP_SERVER")
+	}
+
+	if len(os.Getenv("SMTP_SERVER_PORT")) != 0 {
+		p, err := strconv.Atoi(os.Getenv("SMTP_SERVER_PORT"))
+		if err != nil {
+			fmt.Println("Invalid SMTP port. Using default port instead.")
+		}
+		flags.SMTPPort = p
+	}
+
+	if len(os.Getenv("SMTP_APP_PASSWORD")) != 0 {
+		flags.AppPassword = os.Getenv("SMTP_APP_PASSWORD")
+	}
 }
