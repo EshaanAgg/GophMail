@@ -32,7 +32,7 @@ Since the CLI uses a `SMTP` server to send the mails, you need to configure the 
 
 ## Environment Variables
 
-To set some of the commonly configurations, you can create a `.env` file (a copy of the [provided `.env.sample`](./env.sample)) and use them to provide the configurations.
+To set some of the commonly configurations, you can create a `.env` file (a copy of the provided [`.env.sample`](./.env.sample)) and use them to provide the configurations.
 
 The parameters passed through the `.env` have the highest priority.
 
