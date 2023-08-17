@@ -7,7 +7,7 @@ import (
 )
 
 func (flags *InputFlags) confirmMail(content string, recipient string) bool {
-	sent := flags.sendMail(content, recipient, false)
+	sent := flags.sendMail(content, flags.SenderEmail, false)
 
 	if !sent {
 		sendError("The mail could not be sent due to TCP timeout. Please try again.")
