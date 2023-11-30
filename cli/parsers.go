@@ -12,7 +12,6 @@ import (
 )
 
 func (flags *InputFlags) parseData() []map[string]string {
-
 	f, err := os.Open(flags.DataFile)
 	if err != nil {
 		sendError(fmt.Sprintf("Unable to read data file at %s. Please make sure that the file exists at this location.", flags.DataFile))

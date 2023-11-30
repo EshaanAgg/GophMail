@@ -14,7 +14,7 @@ func (flags *InputFlags) confirmMail(content string, recipient string) bool {
 	}
 
 	fmt.Printf("A sample mail for %s was generated and mailed to the sender's email address (%s).\n", recipient, flags.SenderEmail)
-	fmt.Print("You can check the same for content formating.\nShould I send all the mails? (Y/N) ")
+	fmt.Print("You can check the same for content formating.\n\nShould I send all the mails? (Y/N) ")
 
 	var response string
 	n, err := fmt.Scanln(&response)
@@ -22,7 +22,9 @@ func (flags *InputFlags) confirmMail(content string, recipient string) bool {
 		sendError("Invalid response. Aborting execution.")
 	}
 
-	return response == "Y"
+	fmt.Print("\n\n")
+
+	return response == "Y" || response == "y"
 }
 
 func (flags *InputFlags) sendMail(content string, recipient string, displayMessage bool) bool {

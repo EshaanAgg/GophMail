@@ -1,6 +1,9 @@
 package cli
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 type InputFlags struct {
 	SenderEmail string
@@ -30,13 +33,21 @@ func (flags *InputFlags) Send() {
 
 	fmt.Print("Sending mails...\n\n")
 
+	var wg sync.WaitGroup
+
 	for i, mail := range mails {
-		flags.sendMail(mail, data[i]["Recipient"], true)
+		wg.Add(1)
+		go func(mail string, recipient string, displayMessage bool) {
+			defer wg.Done()
+			flags.sendMail(mail, recipient, displayMessage)
+
+		}(mail, data[i]["Recipient"], true)
 	}
+
+	wg.Wait()
 }
 
 func (flags *InputFlags) validate() {
-
 	if len(flags.SenderEmail) == 0 {
 		sendError("Sender email is a REQUIRED argument which can't be blank. Please specify the same using the '-e' flag.")
 	}

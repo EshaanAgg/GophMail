@@ -2,7 +2,7 @@
 
 This is a simple `cli` built in `Go` that enables you to send mails to multiple users in multiple templates, without ever leaving your command line.
 
-You can run the go project by running `go run .` and passing the required flags, or you can run the same as a binary.
+You can run the go project by running `go run .` and passing the required flags, or you can run the same as a binary. All the mails are sent concurrently using lightweight go-routines on your machine, so that you get the job done quickly without much stress on your machine!
 
 ## About the CLI
 
