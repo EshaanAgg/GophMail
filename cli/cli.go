@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"sync"
 )
 
 type InputFlags struct {
@@ -33,18 +32,47 @@ func (flags *InputFlags) Send() {
 
 	fmt.Print("Sending mails...\n\n")
 
-	var wg sync.WaitGroup
+	// Keeps track of the number of threads that we want to create
+	registerChan := make(chan int)
+	go func() {
+		for i := 0; i < 25; i++ {
+			registerChan <- i
+		}
+	}()
 
-	for i, mail := range mails {
-		wg.Add(1)
-		go func(mail string, recipient string, displayMessage bool) {
-			defer wg.Done()
-			flags.sendMail(mail, recipient, displayMessage)
+	// Asks like a task queue, keeping track of the tasks that are yet to be scheduled
+	tasks := make(chan int)
+	go func() {
+		for i := 0; i < len(mails); i++ {
+			tasks <- i
+		}
+	}()
 
-		}(mail, data[i]["Recipient"], true)
+	// Keeps track of the number of tasks that have been completed successfully
+	successTasks := 0
+	loop := true
+
+	for loop {
+		select {
+		case task := <-tasks:
+			go func() {
+				worker := <-registerChan
+				sent := flags.sendMail(mails[task], data[task]["Recipient"], true)
+				if sent {
+					successTasks++
+					registerChan <- worker
+				} else {
+					tasks <- task
+				}
+			}()
+
+		default:
+			if successTasks == len(mails) {
+				close(tasks)
+				loop = false
+			}
+		}
 	}
-
-	wg.Wait()
 }
 
 func (flags *InputFlags) validate() {
